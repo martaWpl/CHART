@@ -1,0 +1,112 @@
+<!doctype html>
+<meta charset="utf-8">
+<html>
+<head>
+	<title>Bar chart</title>
+	<script src="jquery-1.4.2.min.js"></script>
+	<script src="gauge.min.js"></script>
+	<script src="http://d3js.org/d3.v3.min.js"></script>
+	<script src="http://micropolar.org/micropolar-v0.2.2.js"></script>
+<p>WITAJ {{ imie }}</p>
+
+	<style>
+		div{
+		float: left;
+		border: #eee 1px solid;
+		margin: 5px;
+		}
+		.legend {
+		font-size: 12px;
+		}
+		rect {
+		stroke-width: 2;
+		}
+		div.gauges{
+		position:absolute;
+		right: 5px;
+		top: 5px;
+		}
+	</style>
+</head>
+<body>
+	<div id= "form">
+		<form id="settings">
+			<p> Set the number of turbines: </p>
+			<input type="number" id="turbines" min="1" max ="10">
+			<input type="submit" id="submit" value="OK">
+		</form>
+	</div>
+	<div id="gauges">
+		<canvas id="gauge1" width="250" height="250"></canvas>
+		<canvas id="gauge2" width="250" height="250"></canvas>
+	</div>
+	<script>
+	var n_turbines = 3;
+	var number = document.getElementsByName('turbines')[0];
+	
+	
+	function config_axes() {
+	axis = document.getElementsByClassName('axis-text');
+	for(i =0; i<axis.length; i++) {
+		if (axis[i].textContent=='0'){
+			axis[i].textContent='E';}
+		else if (axis[i].textContent=='90'){
+			axis[i].textContent='S';}
+		else if (axis[i].textContent=='270') {
+			axis[i].textContent='N';}
+		else if (axis[i].textContent=='180') {
+			axis[i].textContent='W';}
+			}
+	}
+	
+	
+	function t_rand(n) {
+		t=[];
+		for (i=0; i<n; i++) {
+			t.push(Math.random()*360);
+		}
+		return t;
+	}
+	
+	function r_rand(n) {
+		r=[];
+		for (i=0; i<n; i++) {
+			r.push(Math.random()*20);
+		}
+		return r;
+	}
+	
+	function adding_turbines(t,n) {
+		k=[];
+		for(j=0; j<t; j++) {
+			k.push({t:t_rand(n), r:r_rand(n), geometry: µ.BAR, group_id: n+1 });
+		}
+		return k;
+	}
+	var n = 8;
+	var configs = [
+	{
+		
+		data:
+		adding_turbines(n_turbines,n),
+        layout: {title: "Stacked Bar Chart", radialAxis: {domain: [-3, 20], orientation: -90}, angularAxis: {ticksCount: 100}, showLegend: false}
+	},];
+
+configs.forEach(function(_config){
+	var config = {layout: {width: 500, height: 500}};
+	µ.util.deepExtend(config, _config);
+    console.log(JSON.stringify(µ.adapter.plotly().convert(config, true)));
+    micropolar.Axis().config(config).render(d3.select('body').append('div'));
+	config_axes();
+	});
+	var gauges = [];
+			
+new Gauge(document.getElementById('gauge1'));
+new Gauge(document.getElementById('gauge2'));
+
+
+			
+</script>
+
+</body>
+</html>

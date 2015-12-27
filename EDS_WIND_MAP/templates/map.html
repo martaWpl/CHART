@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+<script src = "{{ STATIC_ROOT }}jquery.min.js" type="text/javascript"></script>
+<script src="{{ STATIC_ROOT }}ammap/ammap.js" type="text/javascript"></script>
+<script src="{{ STATIC_ROOT }}ammap/maps/js/polandLow.js" type="text/javascript"></script>
+
+<title>MAPA!!!!</title>
+</head>
+<body>
+	<div id="mapdiv" style="width: 800px; height: 600px;"></div>
+	<script>
+	//var mydata = JSON.parse(weather);
+		//$.getJSON('weather.json', function(data) {
+
+
+			/*	var images = new Array();
+				for (i=0; i<5; i++) {
+					punkt = {};
+					punkt['latitude'] = data[i]['lat'];
+					punkt['longitude'] = data[i]['long'];
+					punkt['type'] = "circle";
+					punkt['color'] = "red";
+					punkty[i] = punkt;
+				}
+				console.log(punkty);
+				return images;
+			*/
+
+
+
+		AmCharts.ready(function() {
+			/*var dane;
+			$.ajax({
+				url: 'weather.json',
+				dataType: 'json',
+				type: 'get',
+				cache: false,
+				success: function(data) {
+					console.log(data[0]['long']);
+					dane = data;
+					return dane;
+				}
+			}); */
+		    var map = new AmCharts.AmMap();
+			map.pathToImages = "ammap/images/";
+			//images = [];
+
+			//images = data;
+
+			var dataProvider = {
+				map: "polandLow",
+				getAreasFromMap:true,
+				images: [{latitude:50.85, longitude:17.47, type:"circle", color:"#6c00ff"},
+					{latitude:50.82, longitude:19.1, type:"circle", color:"#6c00ff"},
+					{latitude:54.38, longitude:18.47, type:"circle", color:"#6c00ff"},
+					{latitude:54.17, longitude:19.42, type:"circle", color:"#6c00ff"},
+					{latitude:54.38, longitude:18.47, type:"circle", color:"#6c00ff"},
+					{latitude:54.53, longitude:18.54, type:"circle", color:"#6c00ff"},
+					{latitude:53.57, longitude:14.82, type:"circle", color:"#6c00ff"},
+					{latitude:52.73, longitude:15.25, type:"circle", color:"#6c00ff"},
+					{latitude:51.75, longitude:18.08, type:"circle", color:"#6c00ff"}],
+			};
+			map.dataProvider = dataProvider;
+
+			map.areasSettings = {
+				autoZoom: true,
+				selectedColor: "#CC0000"
+			};
+
+			map.smallMap = new AmCharts.SmallMap();
+
+			map.write("mapdiv");
+		});
+
+	</script>
+</body>
+</html>
