@@ -6,7 +6,4 @@ from django.template import Template , Context, RequestContext
 
 
 def my_view(request):
-    context = {
-        'imie':"Marta",
-    }
     return render(request,'index.html')

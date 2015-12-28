@@ -6,6 +6,7 @@ import CHART
 import EDS_WIND_MAP
 from EDS_CHART import settings
 from EDS_WIND_MAP import views
+from CHART import views
 
 admin.autodiscover()
 
@@ -18,7 +19,7 @@ urlpatterns = patterns('',
 
                        # Uncomment the next line to enable the admin:
                        url(r'^admin/', include(admin.site.urls)),
-                       #url(r'^chart/', CHART.views.my_view),
+                       url(r'^chart/', CHART.views.my_view),
                        url(r'^map/', EDS_WIND_MAP.views.map),
                        ) + static(settings.MEDIA_URL,document_root = settings.MEDIA_ROOT)
 urlpatterns+=staticfiles_urlpatterns()

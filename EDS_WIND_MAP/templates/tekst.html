@@ -1,10 +1,75 @@
+{{ speed }}
+{% load static %}
+{% for miasto in miasta %}
+    {{ miasto }}
+{% endfor %}
 {% for city in cities %}
     <p>{{ city }}</p>
 {% endfor %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<script src="{% static  'ammap/ammap.js'%}" type="text/javascript"></script>
+<script src="{% static  'ammap/maps/js/polandLow.js'%}" type="text/javascript"></script>
 
-<script src="https://github.com/wisniem7/EDS_CHART/tree/master/staticfiles/js/jquery.min.js" type="text/javascript"></script>
-<script src="https://github.com/wisniem7/EDS_CHART/tree/master/staticfiles/js/ammap/ammap.js" type="text/javascript"></script>
-<script src="https://github.com/wisniem7/EDS_CHART/tree/master/staticfiles/js/ammap/maps/js/polandLow.js" type="text/javascript"></script>
+<div id="mapdiv" style="width: 800px; height: 600px;"></div>
+	<script>
+		AmCharts.ready(function() {
+		    var map = new AmCharts.AmMap();
 
-<p>DZIALA MAPA ZE STATIKIEM!!!</p>
+            var trutu ="M15.834,29.084 15.834,16.166 2.917,16.166 29.083,2.917z";
+            var url = "ammap/images/wind.svg";
+			map.pathToImages = "ammap/images/";
+            var path = generate_path({{ dir }});
+
+			var dataProvider = {
+				map: "polandLow",
+				getAreasFromMap:true,
+				images: [{latitude:{{ lat }}, longitude:{{ long }}, svgPath:path, color:set_color({{ speed }}), }],
+			};
+			map.dataProvider = dataProvider;
+
+			map.areasSettings = {
+				autoZoom: true,
+				selectedColor: "#CC0000"
+			};
+
+			map.smallMap = new AmCharts.SmallMap();
+
+			map.write("mapdiv");
+		});
+
+        function set_color(speed) {
+            return increase_brightness('#FF0000',100-speed/22*100);
+        }
+
+        function increase_brightness(hex, percent){
+    // strip the leading # if it's there
+    hex = hex.replace(/^\s*#|\s*$/g, '');
+
+    // convert 3 char codes --> 6, e.g. `E0F` --> `EE00FF`
+    if(hex.length == 3){
+        hex = hex.replace(/(.)/g, '$1$1');
+    }
+
+    var r = parseInt(hex.substr(0, 2), 16),
+        g = parseInt(hex.substr(2, 2), 16),
+        b = parseInt(hex.substr(4, 2), 16);
+
+    return '#' +
+       ((0|(1<<8) + r + (256 - r) * percent / 100).toString(16)).substr(1) +
+       ((0|(1<<8) + g + (256 - g) * percent / 100).toString(16)).substr(1) +
+       ((0|(1<<8) + b + (256 - b) * percent / 100).toString(16)).substr(1);
+}
+    function generate_path(alfa) {
+        var xd = 30;
+        var yd = 30;
+        var xa = xd + Math.sin((20 + alfa) *Math.PI/180) * 30;
+        var ya = yd - Math.cos((20 + alfa) *Math.PI/180) * 30;
+        var xb = xd + Math.sin(alfa * Math.PI/180) * 20;
+        var yb = yd - Math.cos(alfa * Math.PI/180) * 20;
+        var xc = xd + Math.sin((-20 + alfa) * Math.PI/180) * 30;
+        var yc = yd - Math.cos((-20 + alfa) * Math.PI/180) * 30;
+        var path = "M" + xc + ',' + yc + " " + xb + ',' + yb + " " + xa + ',' + ya + ' '+xd+','+yd+'z';
+        return path;
+    }
+	</script>
 
