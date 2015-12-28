@@ -1,6 +1,14 @@
 # Create your views here.
-from django.shortcuts import render
+from django.shortcuts import render, render_to_response
+from EDS_WIND_MAP import interface
 
 
 def map(request):
-    return render(request, "tekst.html")
+    pogoda = interface.create_cities()
+    #weather = interface.rendering(cities)
+    content = {
+        'cities': pogoda,
+        #'weather': weather,
+    }
+
+    return render_to_response("tekst.html", content)
