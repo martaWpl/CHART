@@ -1,12 +1,5 @@
-{{ speed }}
 {% load static %}
-{% for miasto in miasta %}
-    {{ miasto }}
-{% endfor %}
-{% for city in cities %}
-    <p>{{ city }}</p>
-{% endfor %}
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<script src="{% static 'jquery-1.11.3.js'%}"></script>
 <script src="{% static  'ammap/ammap.js'%}" type="text/javascript"></script>
 <script src="{% static  'ammap/maps/js/polandLow.js'%}" type="text/javascript"></script>
 
@@ -15,21 +8,32 @@
 		AmCharts.ready(function() {
 		    var map = new AmCharts.AmMap();
 
-            var trutu ="M15.834,29.084 15.834,16.166 2.917,16.166 29.083,2.917z";
-            var url = "ammap/images/wind.svg";
 			map.pathToImages = "ammap/images/";
             var path = generate_path({{ dir }});
+            var points = new Array();
+
+        function update_points() {
+            {% for city in cities %}
+                points.push({
+                    latitude:{{ city.latitude }},
+                    longitude:{{ city.longitude }},
+                    svgPath: generate_path({{ city.direction }}),
+                    color: set_color({{ city.speed }}),
+                });
+            {% endfor %}
+            return points;
+        }
 
 			var dataProvider = {
 				map: "polandLow",
 				getAreasFromMap:true,
-				images: [{latitude:{{ lat }}, longitude:{{ long }}, svgPath:path, color:set_color({{ speed }}), }],
+				images:update_points(),
 			};
 			map.dataProvider = dataProvider;
 
 			map.areasSettings = {
 				autoZoom: true,
-				selectedColor: "#CC0000"
+				selectedColor: "#CCFFFF"
 			};
 
 			map.smallMap = new AmCharts.SmallMap();
@@ -38,7 +42,7 @@
 		});
 
         function set_color(speed) {
-            return increase_brightness('#FF0000',100-speed/22*100);
+            return increase_brightness('#FF0000',100-speed/25*100);
         }
 
         function increase_brightness(hex, percent){
